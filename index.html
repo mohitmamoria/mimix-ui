@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mimix AI</title>
+    <link rel="stylesheet" href="./output.css" />
+    <script src="//unpkg.com/alpinejs" defer></script>
+  </head>
+  <body x-data="{rewriting: false, training: false}">
+    <nav class="px-8 py-2 bg-black text-white text-sm space-x-2">
+      <span class="font-bold">Mimix AI</span>
+      <span class="text-xs italic">
+        Rewrite a text mimicking a personality.
+      </span>
+    </nav>
+
+    <section class="mx-8 my-8">
+      <form action="#">
+        <div>
+          <label
+            for="personality"
+            class="block text-sm font-medium leading-6 text-gray-900"
+            >Mimic whom?</label
+          >
+          <select
+            id="personality"
+            name="personality"
+            class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          >
+            <option selected>Berkshire Hathway</option>
+            <option>Elon Musk</option>
+          </select>
+          <button
+            type="button"
+            class="text-indigo-600 text-sm underline"
+            @click="training = true"
+          >
+            or create your own personality
+          </button>
+        </div>
+        <div class="mt-4">
+          <div
+            class="flex items-center space-x-2"
+            aria-orientation="horizontal"
+            role="tablist"
+          >
+            <!-- Selected: "bg-gray-100 text-gray-900 hover:bg-gray-200", Not Selected: "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900" -->
+            <button
+              id="tabs-1-tab-1"
+              :class="rewriting ? 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900' : 'bg-gray-100 text-gray-900 hover:bg-gray-200' "
+              class="rounded-md border border-transparent px-3 py-1.5 text-sm font-medium"
+              aria-controls="tabs-1-panel-1"
+              role="tab"
+              type="button"
+              @click="rewriting = false"
+            >
+              Raw
+            </button>
+            <!-- Selected: "bg-gray-100 text-gray-900 hover:bg-gray-200", Not Selected: "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900" -->
+            <button
+              id="tabs-1-tab-2"
+              :class="!rewriting ? 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900' : 'bg-gray-100 text-gray-900 hover:bg-gray-200' "
+              class="rounded-md border border-transparent px-3 py-1.5 text-sm font-medium"
+              aria-controls="tabs-1-panel-2"
+              role="tab"
+              type="button"
+              @click="rewriting = true"
+            >
+              Rewritten
+            </button>
+          </div>
+          <div class="mt-2">
+            <div
+              id="tabs-1-panel-1"
+              class="-m-0.5 rounded-lg p-0.5"
+              aria-labelledby="tabs-1-tab-1"
+              role="tabpanel"
+              tabindex="0"
+              x-show="!rewriting"
+            >
+              <label for="comment" class="sr-only">Text</label>
+              <div>
+                <textarea
+                  rows="20"
+                  name="comment"
+                  id="comment"
+                  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder="Write your text..."
+                ></textarea>
+              </div>
+            </div>
+            <div
+              id="tabs-1-panel-2"
+              class="-m-0.5 rounded-lg p-0.5"
+              aria-labelledby="tabs-1-tab-2"
+              role="tabpanel"
+              tabindex="0"
+              x-show="rewriting"
+            >
+              <div class="border-b">
+                <div
+                  class="mx-px mt-px px-3 pb-12 pt-2 text-sm leading-5 text-gray-800"
+                >
+                  Rewritten content will render here.
+
+                  <div class="mt-4 flex">
+                    <button
+                      type="submit"
+                      class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      Rewrite
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Slideover -->
+    <div
+      class="relative z-10"
+      aria-labelledby="slide-over-title"
+      role="dialog"
+      aria-modal="true"
+      x-show="training"
+    >
+      <div
+        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+        x-show="training"
+        x-transition:enter="ease-in-out duration-500"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in-out duration-500"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+      ></div>
+
+      <div class="fixed inset-0 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+          <div
+            class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16"
+          >
+            <div
+              class="pointer-events-auto w-screen max-w-2xl"
+              x-show="training"
+              x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
+              x-transition:enter-start="translate-x-full"
+              x-transition:enter-end="translate-x-0"
+              x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
+              x-transition:leave-start="translate-x-0"
+              x-transition:leave-end="translate-x-full"
+            >
+              <form
+                class="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl"
+              >
+                <div class="h-0 flex-1 overflow-y-auto">
+                  <div class="bg-indigo-700 px-4 py-6 sm:px-6">
+                    <div class="flex items-center justify-between">
+                      <h2
+                        class="text-base font-semibold leading-6 text-white"
+                        id="slide-over-title"
+                      >
+                        Create new personality
+                      </h2>
+                      <div class="ml-3 flex h-7 items-center">
+                        <button
+                          type="button"
+                          @click="training = false"
+                          class="rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                        >
+                          <span class="sr-only">Close panel</span>
+                          <svg
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="mt-1">
+                      <p class="text-sm text-indigo-300">
+                        Create new personality by feeding Mimix with some
+                        written text from them. It could be a blog post or a
+                        bunch of tweets.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex flex-1 flex-col justify-between">
+                    <div class="divide-y divide-gray-200 px-4 sm:px-6">
+                      <div class="space-y-6 pb-5 pt-6">
+                        <div>
+                          <label
+                            for="personality-name"
+                            class="block text-sm font-medium leading-6 text-gray-900"
+                            >Name</label
+                          >
+                          <div class="mt-2">
+                            <input
+                              type="text"
+                              name="personality-name"
+                              id="personality-name"
+                              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label
+                            for="personality-sample"
+                            class="block text-sm font-medium leading-6 text-gray-900"
+                            >Give Mimix a taste of their personality
+                            <p class="text-gray-500 font-normal">
+                              Anything written by them (blog posts, essays,
+                              tweets) of about ~300 words.
+                            </p>
+                          </label>
+                          <div class="mt-2">
+                            <textarea
+                              id="personality-sample"
+                              name="personality-sample"
+                              rows="10"
+                              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            ></textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-shrink-0 justify-end px-4 py-4">
+                  <button
+                    @click="training=false"
+                    type="button"
+                    class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    class="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Create
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
